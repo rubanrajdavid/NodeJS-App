@@ -3,7 +3,7 @@ const morgan = require("morgan");
 const mysql_lib = require("mysql");
 const bodyParser = require("body-parser");
 
-//SQL Connection Settings
+//SQL Connection Setting
 const mysql = mysql_lib.createConnection({
   host: "localhost",
   user: "root",
