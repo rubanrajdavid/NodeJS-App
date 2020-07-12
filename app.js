@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const mysql_lib = require("mysql");
 const bodyParser = require("body-parser");
+const myfun = require('./user-def-functions')
 
 //SQL Connection Setting
 const mysql = mysql_lib.createConnection({
@@ -93,7 +94,7 @@ app.get("/user/:id", (req, res) => {
 app.post("/user", (req, res) => {
   let sql_query =
     "INSERT INTO `user_data` (`ID`, `USER_NAME`, `EMAIL`, `CONTACT_NUMBER`) VALUES (NULL, '?', '?', '?');";
-  check_if_user_exists(req.body.mail)
+  myfun.check_if_user_exists(req.body.mail)
     .then((x) => {
       console.log(x);
     })
@@ -104,17 +105,3 @@ app.post("/user", (req, res) => {
 });
 
 //Function to Check if MailID Exists
-function check_if_user_exists(email_id) {
-  let sql_query = "SELECT * FROM user_data WHERE EMAIL = ?";
-  return new Promise((resolve, reject) => {
-    mysql.query(sql_query, [email_id], (err, rows, fields) => {
-      if (err != null) {
-        reject(err);
-      } else if (rows.length == 0) {
-        resolve(false);
-      } else {
-        resolve(true);
-      }
-    });
-  });
-}
