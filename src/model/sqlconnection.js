@@ -1,7 +1,11 @@
-const mysql_lib = require("mysql");
-const mysql = mysql_lib.createConnection({
-    host: "localhost",
-    user: "root",
-    database: "cron_example",
+const Sequelize = require("sequelize");
+module.exports = new Sequelize("cron_example", "root", "", {
+  host: "localhost",
+  dialect: "mysql",
+
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000,
+  },
 });
-module.exports = mysql
