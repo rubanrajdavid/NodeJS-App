@@ -4,7 +4,6 @@ const mysql_lib = require("mysql");
 const bodyParser = require("body-parser");
 
 
-//SQL Connection Setting
 
 
 //Create an object in Express
