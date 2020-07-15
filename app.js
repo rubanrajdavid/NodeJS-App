@@ -24,7 +24,7 @@ db.authenticate()
   .then(() => {
     console.log("connected");
   })
-  .catch((error) => console.log(error));
+  .catch((error) => console.log(error, "Please Start MySQL Server"));
 
 //Assign the View folder as static address
 app.use(express.static("./view"));
