@@ -1,5 +1,9 @@
 const bodyParser = require("body-parser");
-const User = require("../model/User")
+const {
+    User,
+    new_user
+} = require("../model/User")
+// const new_user = require("../model/User")
 
 let controller = {
     listusers: (_req, res) => {
@@ -62,13 +66,30 @@ let controller = {
             })
         });
     },
+    generateOTP: (size) => {
+        var string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let OTP = '';
+        var len = string.length;
+        for (let i = 0; i < size; i++) {
+            OTP += string[Math.floor(Math.random() * len)];
+        }
+        return OTP;
+    },
     create_user: (req, res) => {
         controller.check_if_user_exists(req.body.mail)
             .then((x) => {
                 if (!x) {
-                    console.log("user dosent exist")
+                    new_user.create({
+                        mail: req.body.mail,
+                        name: req.body.name,
+                        otp: controller.generateOTP(15)
+                    }).then((new_user) => {
+                        console.log(new_user)
+                    }).catch((error) => {
+                        console.error(error)
+                    })
                 } else {
-                    console.log("user exist")
+                    console.log("Existing User")
                 }
             })
         res.end();
