@@ -15,4 +15,7 @@ router.get("/:mail", controller.userdetails);
 //Create a new user by put method
 router.post("/", controller.create_user)
 
+//Register User by getting all details
+router.get("/verify/:otp",controller.verify_url)
+
 module.exports = router
