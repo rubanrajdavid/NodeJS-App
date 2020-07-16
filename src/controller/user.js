@@ -66,6 +66,24 @@ let controller = {
             })
         });
     },
+    check_if_user_already_registered: (email_id) => {
+        return new Promise((resolve, reject) => {
+            new_user.findAll({
+                where: {
+                    mail: email_id
+                },
+                raw: true
+            }).then((details) => {
+                if (details.length == 0) {
+                    resolve(false)
+                } else {
+                    resolve(true)
+                }
+            }).catch((error) => {
+                reject(error)
+            })
+        });
+    },
     generateOTP: (size) => {
         var string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         let OTP = '';
@@ -75,19 +93,43 @@ let controller = {
         }
         return OTP;
     },
+    create_unverified_new_user: (email_id, name) => {
+        new_user.create({
+            mail: email_id,
+            name: name,
+            otp: controller.generateOTP(15)
+        }).then((new_user) => {
+            console.log(new_user)
+        }).catch((error) => {
+            console.error(error)
+        })
+    },
+    update_unverified_new_user: (email_id, name) => {
+        new_user.update({
+            name: name,
+            otp: controller.generateOTP(15)
+        }, {
+            where: {
+                mail: email_id
+            }
+        })
+    },
     create_user: (req, res) => {
         controller.check_if_user_exists(req.body.mail)
             .then((x) => {
                 if (!x) {
-                    new_user.create({
-                        mail: req.body.mail,
-                        name: req.body.name,
-                        otp: controller.generateOTP(15)
-                    }).then((new_user) => {
-                        console.log(new_user)
-                    }).catch((error) => {
-                        console.error(error)
+                    controller.check_if_user_already_registered(req.body.mail).then((user_registered) => {
+                        if (!user_registered) {
+                            controller.create_unverified_new_user(req.body.mail, req.body.name)
+                            console.log("New User , proceeding with E-Mail Verification")
+                        } else {
+                            controller.update_unverified_new_user(req.body.mail, req.body.name)
+                            console.log("Sending New Verification E-Mail")
+                        }
+                    }).catch((e) => {
+                        console.log(e)
                     })
+
                 } else {
                     console.log("Existing User")
                 }
