@@ -21,6 +21,9 @@ router.get("/verify/:otp", controller.verify_url)
 //Registering user details
 router.post("/register", controller.register)
 
+//Register Page
+router.get("/register", controller.register_html)
+
 //register html send file
 router.post("/login", controller.login)
 
