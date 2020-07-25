@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <title>Register</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+</head>
+
+<body style="padding: 60px;">
+  <h1 class="text-center">Register Account</h1>
+  <hr />
+  <div class="container align-items-center">
+    <div class="row justify-content-center">
+      <div class="col-auto col-lg-10 col-xl-9 offset-lg-0 d-inline align-self-center">
+        <form
+          class="justify-content-center align-items-center align-content-center align-self-center justify-content-lg-center align-items-lg-center"
+          action="/user/register" method="POST">
+          <div class="input-group" style="padding: 14px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text">First Name</span>
+            </div>
+            <input class="form-control" type="text" name="firstName" required="" />
+            <div class="input-group-append"></div>
+          </div>
+          <div class="input-group" style="padding: 14px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Last Name</span>
+            </div>
+            <input class="form-control" type="text" style="padding: 14px;" name="lastName" />
+            <div class="input-group-append"></div>
+          </div>
+          <div class="input-group" style="padding: 14px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Mobile</span>
+            </div>
+            <input class="form-control" type="text" style="padding: 14px;" name="contactNumber" inputmode="tel" />
+            <div class="input-group-append"></div>
+          </div>
+          <div class="input-group" style="padding: 14px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Password</span>
+            </div>
+            <input class="form-control" type="password" id="password" style="padding: 14px;" name="password" required=""
+              minlength="8" />
+            <div class="input-group-append"></div>
+          </div>
+          <!-- Start: Confirm Password -->
+          <div class="input-group" style="padding: 14px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Re-enter Password</span>
+            </div>
+            <input class="form-control" type="password" id="confirm_password" style="padding: 14px;" name="password" />
+            <div class="input-group-append">
+              <p class="input-group-text" id="matched"></p>
+            </div>
+          </div>
+          <!-- End: Confirm Password -->
+          <div class="input-group" style="padding: 14px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text">E-Mail</span>
+            </div>
+            <input class="form-control" type="text" readonly="" value="{{mail}}" name="email" inputmode="email" />
+            <div class="input-group-append"></div>
+          </div>
+          <div class="input-group" style="padding: 14px;">
+            <div class="input-group-prepend">
+              <span class="input-group-text">OTP</span>
+            </div>
+            <input class="form-control" type="text" readonly="" value="{{otp}}" name="otp" />
+            <div class="input-group-append"></div>
+          </div>
+          <div class="text-sm-center">
+            <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+  <script>
+    var password = document.getElementById("password");
+    var confirm_password = document.getElementById("confirm_password");
+
+    function check_passwords(password, confirm_password) {
+      if (password == confirm_password) {
+        document.getElementById("matched").innerHTML = "Passwords Matched";
+        document.getElementById("matched").style.color = "#0f6e00";
+        console.log("Passwords Matched");
+      } else {
+        document.getElementById("matched").innerHTML =
+          "Passwords not Matched";
+        document.getElementById("matched").style.color = "#ff0000";
+        console.log("Passwords not Matched");
+      }
+    }
+    confirm_password.addEventListener("keyup", function () {
+      check_passwords(password.value, confirm_password.value);
+      password.addEventListener("keyup", function () {
+        check_passwords(password.value, confirm_password.value);
+      });
+    });
+  </script>
+</body>
+
+</html>

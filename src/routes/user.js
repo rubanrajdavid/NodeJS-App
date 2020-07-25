@@ -10,12 +10,21 @@ const router = express.Router()
 router.get('/listusers', controller.listusers);
 
 //Get Details of a User and handle errors
-router.get("/:mail", controller.userdetails);
+router.get("/details/:mail", controller.userdetails);
 
-//Create a new user by put method
+//Create a new user 
 router.post("/", controller.create_user)
 
 //Register User by getting all details
-router.get("/verify/:otp",controller.verify_url)
+router.get("/verify/:otp", controller.verify_url)
+
+//Registering user details
+router.post("/register", controller.register)
+
+//register html send file
+router.post("/login", controller.login)
+
+//Login Page
+router.get("/login", controller.login_html)
 
 module.exports = router

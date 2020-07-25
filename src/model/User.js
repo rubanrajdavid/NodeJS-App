@@ -7,7 +7,13 @@ const User = db.define('user_data', {
         primaryKey: true,
         autoIncrement: true,
     },
-    USER_NAME: {
+    FIRSTNAME: {
+        type: Sequelize.STRING
+    },
+    LASTNAME: {
+        type: Sequelize.STRING
+    },
+    PASSWORD: {
         type: Sequelize.STRING
     },
     EMAIL: {
