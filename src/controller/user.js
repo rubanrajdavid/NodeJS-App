@@ -104,12 +104,12 @@ let controller = {
     }
     return OTP;
   },
-  create_unverified_new_user: (email_id, name) => {
+  create_unverified_new_user: (email_id, name, user_otp) => {
     new_user
       .create({
         mail: email_id,
         name: name,
-        otp: controller.generateOTP(15),
+        otp: user_otp,
       })
       .then((new_user) => {
         console.log(new_user);
@@ -212,6 +212,9 @@ let controller = {
                 .send_verification_mail(req.body.mail, req.body.name, user_otp)
                 .then(() => {
                   console.log("Mail Sent");
+                  res.json({
+                    status: "Mail Sent"
+                  })
                 })
                 .catch((err) => {
                   console.log(err);
@@ -224,7 +227,7 @@ let controller = {
       } else {
         console.log("Existing User");
         res.json({
-          status: "Email is Already in use Please Login"
+          status: "Email is Already in use Please Login",
         });
       }
     });
@@ -248,15 +251,17 @@ let controller = {
               EMAIL: req.body.email,
               CONTACT_NUMBER: req.body.contactNumber,
             });
-            new_user.destroy({
-              where: {
-                mail: req.body.email
-              }
-            }).then(() => {
-              res.json({
-                ststus: "user registered successfully"
+            new_user
+              .destroy({
+                where: {
+                  mail: req.body.email,
+                },
+              })
+              .then(() => {
+                res.json({
+                  ststus: "user registered successfully",
+                });
               });
-            })
             console.log("main function", password);
           });
         } else {
@@ -272,8 +277,8 @@ let controller = {
         });
       });
     console.log(req.body);
-
   },
+  register_html: (req, res) => {},
   hash_password: async (password) => {
     try {
       let salt = await bcrypt.genSalt();
@@ -284,26 +289,46 @@ let controller = {
       console.log("Hash Error", error);
     }
   },
-  check_password: () => {},
   login: (req, res) => {
     User.findAll({
-      where: {
-        EMAIL: req.body.mail
-      },
-      raw: true
-    }).then((details) => {
-      // console.log(details)
-      console.log(details[0].PASSWORD, req.body.password)
-    }).catch((error) => {
-      console.log(error)
-    })
-    res.json({
-      status: "Recieved"
-    })
+        where: {
+          EMAIL: req.body.mail,
+        },
+        raw: true,
+      })
+      .then((details) => {
+        if (details.length == 0) {
+          res.json({
+            status: "Unregistered User"
+          });
+        } else {
+          bcrypt
+            .compare(req.body.password, details[0].PASSWORD)
+            .then((result) => {
+              if (result) {
+                res.json({
+                  status: "Authentication Successful",
+                });
+              } else {
+                res.json({
+                  status: "Username / Password is Wrong",
+                });
+              }
+            })
+            .catch((error) => {
+              res.json({
+                error,
+              });
+            });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   login_html: (req, res) => {
-    res.render('login')
-  }
+    res.render("login");
+  },
 };
 
 module.exports = controller;
