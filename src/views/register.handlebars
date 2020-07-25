@@ -1,108 +1,108 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-  <title>Register</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
-</head>
-
-<body style="padding: 60px;">
-  <h1 class="text-center">Register Account</h1>
-  <hr />
-  <div class="container align-items-center">
-    <div class="row justify-content-center">
-      <div class="col-auto col-lg-10 col-xl-9 offset-lg-0 d-inline align-self-center">
-        <form
-          class="justify-content-center align-items-center align-content-center align-self-center justify-content-lg-center align-items-lg-center"
-          action="/user/register" method="POST">
-          <div class="input-group" style="padding: 14px;">
-            <div class="input-group-prepend">
-              <span class="input-group-text">First Name</span>
-            </div>
-            <input class="form-control" type="text" name="firstName" required="" />
-            <div class="input-group-append"></div>
+<html lang="en">
+  <head>
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/register.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <br />
+    <br />
+    <div class="container">
+      <div class="row">
+        <div
+          class="card text-center form-card shadow p-3 mb-5 bg-white rounded"
+          style="width: 35rem; height: auto !important;"
+        >
+          <i class="fa fa-user-plus fa-5x" aria-hidden="true"></i>
+          <div class="card-body text-center">
+            <h2 class="card-title form-title" style="text-align: center;">
+              Create Account
+            </h2>
+            <hr />
+            <br />
+            <form action="/user/register" method="POST">
+              <input
+                name="firstName"
+                type="text"
+                class="form-control rounded-pill txt-bx text-center"
+                placeholder="First Name"
+                required=""
+              /><br />
+              <input
+                class="form-control rounded-pill txt-bx text-center"
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+              /><br />
+              <input
+                class="form-control rounded-pill txt-bx text-center"
+                type="tel"
+                name="contactNumber"
+                placeholder="Contact Number"
+                inputmode="tel"
+              />
+              <br />
+              <input
+                id="password"
+                class="form-control rounded-pill txt-bx text-center"
+                type="password"
+                name="password"
+                placeholder="Password"
+                required=""
+              />
+              <br />
+              <input
+                id="confirm_password"
+                class="form-control rounded-pill txt-bx text-center"
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                required=""
+              />
+              <br />
+              <input
+                class="form-control rounded-pill txt-bx text-center"
+                type="email"
+                name="email"
+                readonly=""
+                value="{{mail}}"
+                inputmode="email"
+              />
+              <br />
+              <input
+                class="form-control rounded-pill txt-bx text-center"
+                type="text"
+                name="otp"
+                readonly=""
+                value="{{otp}}"
+                inputmode="none"
+              />
+              <br />
+              <button
+                type="submit"
+                class="form-control submit-btn btn btn-outline-primary rounded-pill"
+                value="submit"
+              >
+                Create Account
+              </button>
+            </form>
+            <br />
           </div>
-          <div class="input-group" style="padding: 14px;">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Last Name</span>
-            </div>
-            <input class="form-control" type="text" style="padding: 14px;" name="lastName" />
-            <div class="input-group-append"></div>
-          </div>
-          <div class="input-group" style="padding: 14px;">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Mobile</span>
-            </div>
-            <input class="form-control" type="text" style="padding: 14px;" name="contactNumber" inputmode="tel" />
-            <div class="input-group-append"></div>
-          </div>
-          <div class="input-group" style="padding: 14px;">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Password</span>
-            </div>
-            <input class="form-control" type="password" id="password" style="padding: 14px;" name="password" required=""
-              minlength="8" />
-            <div class="input-group-append"></div>
-          </div>
-          <!-- Start: Confirm Password -->
-          <div class="input-group" style="padding: 14px;">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Re-enter Password</span>
-            </div>
-            <input class="form-control" type="password" id="confirm_password" style="padding: 14px;" name="password" />
-            <div class="input-group-append">
-              <p class="input-group-text" id="matched"></p>
-            </div>
-          </div>
-          <!-- End: Confirm Password -->
-          <div class="input-group" style="padding: 14px;">
-            <div class="input-group-prepend">
-              <span class="input-group-text">E-Mail</span>
-            </div>
-            <input class="form-control" type="text" readonly="" value="{{mail}}" name="email" inputmode="email" />
-            <div class="input-group-append"></div>
-          </div>
-          <div class="input-group" style="padding: 14px;">
-            <div class="input-group-prepend">
-              <span class="input-group-text">OTP</span>
-            </div>
-            <input class="form-control" type="text" readonly="" value="{{otp}}" name="otp" />
-            <div class="input-group-append"></div>
-          </div>
-          <div class="text-sm-center">
-            <button class="btn btn-primary" type="submit" value="Submit">Submit</button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-  <script>
-    var password = document.getElementById("password");
-    var confirm_password = document.getElementById("confirm_password");
-
-    function check_passwords(password, confirm_password) {
-      if (password == confirm_password) {
-        document.getElementById("matched").innerHTML = "Passwords Matched";
-        document.getElementById("matched").style.color = "#0f6e00";
-        console.log("Passwords Matched");
-      } else {
-        document.getElementById("matched").innerHTML =
-          "Passwords not Matched";
-        document.getElementById("matched").style.color = "#ff0000";
-        console.log("Passwords not Matched");
-      }
-    }
-    confirm_password.addEventListener("keyup", function () {
-      check_passwords(password.value, confirm_password.value);
-      password.addEventListener("keyup", function () {
-        check_passwords(password.value, confirm_password.value);
-      });
-    });
-  </script>
-</body>
-
+    <script src="/script/register.js"></script>
+  </body>
 </html>
