@@ -1,5 +1,5 @@
 const express = require('express')
-const controller = require("../controller/user");
+const controller = require("../controllers/user");
 const router = express.Router()
 
 
@@ -13,7 +13,7 @@ router.get('/listusers', controller.listusers);
 router.get("/details/:mail", controller.userdetails);
 
 //Create a new user 
-router.post("/", controller.create_user)
+router.post("/create", controller.create_user)
 
 //Register User by getting all details
 router.get("/verify/:otp", controller.verify_url)
@@ -22,7 +22,7 @@ router.get("/verify/:otp", controller.verify_url)
 router.post("/register", controller.register)
 
 //Register Page
-router.get("/register", controller.register_html)
+router.get("/create", controller.register_html)
 
 //register html send file
 router.post("/login", controller.login)
