@@ -1,7 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const db = require("./src/model/sqlconnection");
+const db = require("./src/configurations/sqlconnection");
 const hbs = require("express-handlebars");
 const path = require("path");
 
