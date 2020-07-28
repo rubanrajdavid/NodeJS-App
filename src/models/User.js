@@ -21,6 +21,9 @@ const User = db.define('user_data', {
     },
     CONTACT_NUMBER: {
         type: Sequelize.INTEGER
+    },
+    ALLOWED: {
+        type: Sequelize.INTEGER
     }
 }, {
     timestamps: false
@@ -51,7 +54,30 @@ const new_user = db.define('temp_user', {
     freezeTableName: true,
 });
 
+const pwd_reset = db.define('reset_password', {
+    ID: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    EMAIL: {
+        type: Sequelize.STRING
+    },
+    OTP: {
+        type: Sequelize.STRING
+    },
+    CREATED_AT: {
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        allowNull: false
+    }
+}, {
+    timestamps: false,
+    freezeTableName: true,
+});
+
 module.exports = {
     User: User,
-    new_user: new_user
+    new_user: new_user,
+    pwd_reset: pwd_reset
 }
