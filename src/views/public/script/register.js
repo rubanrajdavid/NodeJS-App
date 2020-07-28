@@ -1,8 +1,10 @@
 var password = document.getElementById("password");
 var confirm_password = document.getElementById("confirm_password");
 
+
 function check_passwords(password, confirm_password) {
     if (password == confirm_password) {
+        document.getElementById("submit_btn").disabled = false;
         if (document.getElementById("confirm_password").classList.contains("is-invalid")) {
             document.getElementById("confirm_password").classList.remove("is-invalid")
         }
@@ -11,6 +13,7 @@ function check_passwords(password, confirm_password) {
         }
 
     } else {
+        document.getElementById("submit_btn").disabled = true;
         if (document.getElementById("confirm_password").classList.contains("is-valid")) {
             document.getElementById("confirm_password").classList.remove("is-valid")
         }
