@@ -4,11 +4,15 @@ const bcrypt = require("bcrypt");
 const {
   mail_settings,
   mail_name
-} = require("../configurations/mail_cred")
+} = require("../configurations/mail_cred");
 const {
   User,
-  new_user
+  new_user,
+  pwd_reset
 } = require("../models/User");
+const {
+  raw
+} = require("body-parser");
 
 let controller = {
   listusers: (_req, res) => {
@@ -133,16 +137,28 @@ let controller = {
     }, );
     return user_otp;
   },
-  send_verification_mail: async (email_id, name, user_otp) => {
+  send_verification_mail: async (email_id, name, user_otp, type) => {
+    switch (type) {
+      case 0:
+        mail_html =
+          `<a href="http://localhost:3002/user/verify/` +
+          user_otp +
+          `">Click Here to register in NodeJS API Server</a>`;
+        break;
+      case 1:
+        mail_html =
+          `<a href="http://localhost:3002/user/verify-reset/` +
+          user_otp +
+          `">Click Here to reset Password</a>`;
+        break;
+    }
     let transporter = nodemailer.createTransport(mail_settings);
     let info = await transporter.sendMail({
-      from: '"' + mail_name + '" <' + mail_settings.auth.user + '>',
+      from: '"' + mail_name + '" <' + mail_settings.auth.user + ">",
       to: name + "," + email_id,
       subject: "Verification Mail",
       text: "",
-      html: `<a href="http://localhost:3002/user/verify/` +
-        user_otp +
-        `">Click Here to register in NodeJS API Server</a>`,
+      html: mail_html,
     });
     console.log("Message sent: %s", info.messageId);
   },
@@ -188,13 +204,19 @@ let controller = {
                 user_otp,
               );
               console.log("New User , proceeding with E-Mail Verification");
+              const type = 0;
               controller
-                .send_verification_mail(req.body.mail, req.body.name, user_otp)
+                .send_verification_mail(
+                  req.body.mail,
+                  req.body.name,
+                  user_otp,
+                  type,
+                )
                 .then(() => {
                   console.log("Mail Sent");
                   res.json({
-                    status: "Mail Sent"
-                  })
+                    status: "Mail Sent",
+                  });
                 })
                 .catch((err) => {
                   console.log(err);
@@ -212,8 +234,8 @@ let controller = {
                 .then(() => {
                   console.log("Mail Sent");
                   res.json({
-                    status: "Mail Sent"
-                  })
+                    status: "Mail Sent",
+                  });
                 })
                 .catch((err) => {
                   console.log(err);
@@ -240,15 +262,16 @@ let controller = {
         raw: true,
       })
       .then((details) => {
-        console.log(details);
+        console.log(req.body.password, "#265");
         if (details.length != 0) {
-          controller.hash_password(req.body.password[0]).then((password) => {
+          controller.hash_password(req.body.password).then((password) => {
             User.create({
               FIRSTNAME: req.body.firstName,
               LASTNAME: req.body.lastName,
               PASSWORD: password,
               EMAIL: req.body.email,
               CONTACT_NUMBER: req.body.contactNumber,
+              ALLOWED: 1
             });
             new_user
               .destroy({
@@ -275,7 +298,7 @@ let controller = {
           error: error,
         });
       });
-    console.log(req.body);
+    console.log(req.body, "#301");
   },
   register_html: (req, res) => {
     res.render("create_user");
@@ -300,12 +323,18 @@ let controller = {
       .then((details) => {
         if (details.length == 0) {
           res.json({
-            status: "Unregistered User"
+            status: "Unregistered User",
+          });
+        } else if (details[0].ALLOWED == 0) {
+          res.json({
+            status: "Password Reset Verification Pending please complete the process",
           });
         } else {
+          console.log(details[0].PASSWORD)
           bcrypt
             .compare(req.body.password, details[0].PASSWORD)
             .then((result) => {
+              console.log(result)
               if (result) {
                 res.json({
                   status: "Authentication Successful",
@@ -327,8 +356,173 @@ let controller = {
         console.log(error);
       });
   },
+  reset_password_email: (mail) => {
+    User.findAll({
+        where: {
+          EMAIL: mail,
+        },
+        raw: true,
+      })
+      .then((details) => {
+        let user_otp = controller.generateOTP(15);
+        console.log(details, 2);
+        pwd_reset.create({
+          EMAIL: details[0].EMAIL,
+          OTP: user_otp,
+        });
+        console.log(details[0].EMAIL, details[0].FIRSTNAME, user_otp, 0);
+        controller.send_verification_mail(
+          details[0].EMAIL,
+          details[0].FIRSTNAME,
+          user_otp,
+          0,
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
   login_html: (req, res) => {
     res.render("login");
+  },
+  forgot_pwd: (req, res) => {
+    controller.check_if_user_exists(req.body.mail).then((x) => {
+      if (x) {
+        User.findAll({
+          where: {
+            EMAIL: req.body.mail,
+          },
+          raw: true,
+        }).then((details) => {
+          console.log(req.body.mail, "#397");
+          let otp = controller.generateOTP(15);
+          controller.send_verification_mail(
+            req.body.mail,
+            details[0].FIRSTNAME,
+            otp,
+            1,
+          );
+          User.update({
+            ALLOWED: 0
+          }, {
+            where: {
+              EMAIL: req.body.mail
+            }
+          });
+          pwd_reset.findAll({
+            where: {
+              EMAIL: req.body.mail
+            }
+          }).then((details) => {
+            if (details.length == 0) {
+              pwd_reset.create({
+                EMAIL: req.body.mail,
+                OTP: otp
+              }).then((details) => {
+                res.json({
+                  status: "Password Reset Verification Mail Sent Successfully"
+                })
+                console.log("Password Reset OTP Generated Successfully")
+              }).catch((err) => {
+                console.log("Password Reset OTP error : ", err)
+              })
+            } else {
+              pwd_reset.update({
+                OTP: otp
+              }, {
+                where: {
+                  ID: details[0].ID
+                }
+              }).then((details) => {
+                res.json({
+                  status: "Password Reset Verification Mail Re-Sent Successfully"
+                })
+                console.log("Update Password Reset OTP")
+              }).catch((err) => {
+                console.log("Error in Update Password reset OTP : ", err)
+              })
+            }
+          })
+        });
+      } else {
+        controller.check_if_user_already_registered(req.body.mail).then((y) => {
+          if (!y) {
+            res.json({
+              status: "User Not Registered",
+            });
+          } else {
+            res.json({
+              status: "Complete User Mail Verification first",
+            });
+          }
+        });
+      }
+    });
+  },
+  forgot_pwd_html: (req, res) => {
+    res.render("forgot_password");
+  },
+  forgot_pwd_mail_verify: (req, res) => {
+    pwd_reset.findAll({
+        where: {
+          OTP: req.params.otp,
+        },
+        raw: true,
+      })
+      .then((details) => {
+        console.log(details);
+        if (details.length != 0) {
+          res.render("reset_password", {
+            otp: details[0].OTP,
+            mail: details[0].EMAIL,
+          });
+        } else {
+          res.json({
+            error: "Link Expired please reset again",
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        res.json({
+          error: error,
+        });
+      });
+  },
+  forgot_pwd_change: (req, res) => {
+    User.findAll({
+      where: {
+        EMAIL: req.body.email
+      },
+      raw: true
+    }).then((details) => {
+      if (details.length != 0) {
+        controller.hash_password(req.body.password).then((password) => {
+          User.update({
+            PASSWORD: password,
+            ALLOWED: 1
+          }, {
+            where: {
+              EMAIL: req.body.email
+            }
+          });
+          pwd_reset.destroy({
+              where: {
+                EMAIL: req.body.email,
+              },
+            })
+            .then(() => {
+              res.json({
+                status: "Password Changed Successfully",
+              });
+            });
+        })
+      } else {
+        res.json({
+          error: "Unauthorised User Verification",
+        });
+      }
+    })
   },
 };
 
