@@ -4,12 +4,12 @@ const bcrypt = require("bcrypt");
 const {
   mail_settings,
   mail_name
-} = require("../configurations/mail_cred");
+} = require("../../configurations/mail_cred");
 const {
   User,
   new_user,
   pwd_reset
-} = require("../models/User");
+} = require("../../models/user/User");
 const {
   raw
 } = require("body-parser");
@@ -173,7 +173,7 @@ let controller = {
       .then((details) => {
         console.log(details);
         if (details.length != 0) {
-          res.render("register", {
+          res.render("user/register", {
             otp: details[0].otp,
             mail: details[0].mail,
           });
@@ -301,7 +301,7 @@ let controller = {
     console.log(req.body, "#301");
   },
   register_html: (req, res) => {
-    res.render("create_user");
+    res.render("user/create_user");
   },
   hash_password: async (password) => {
     try {
@@ -383,7 +383,7 @@ let controller = {
       });
   },
   login_html: (req, res) => {
-    res.render("login");
+    res.render("user/login");
   },
   forgot_pwd: (req, res) => {
     controller.check_if_user_exists(req.body.mail).then((x) => {
@@ -460,7 +460,7 @@ let controller = {
     });
   },
   forgot_pwd_html: (req, res) => {
-    res.render("forgot_password");
+    res.render("user/forgot_password");
   },
   forgot_pwd_mail_verify: (req, res) => {
     pwd_reset.findAll({
@@ -472,7 +472,7 @@ let controller = {
       .then((details) => {
         console.log(details);
         if (details.length != 0) {
-          res.render("reset_password", {
+          res.render("user/reset_password", {
             otp: details[0].OTP,
             mail: details[0].EMAIL,
           });

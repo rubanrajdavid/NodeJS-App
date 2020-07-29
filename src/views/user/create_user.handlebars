@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-  <title>Reset password</title>
-  <link rel="stylesheet" href="/css/forgot_password.css" />
+  <title>Create User</title>
+  <link rel="stylesheet" href="/assets/css/create_user.css" />
   <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
@@ -14,21 +14,25 @@
     <div class="row">
       <div class="card text-center form-card shadow p-3 mb-5 bg-white rounded"
         style="width: 25rem; height: 500px !important;">
-        <i class="fa fa-check-circle fa-5x" aria-hidden="true"></i>
+        <i class="fa fa-user-plus fa-5x" aria-hidden="true"></i>
         <div class="card-body text-center">
           <h2 class="card-title form-title" style="text-align: center;">
-            Reset Password
+            Create Account
           </h2>
           <hr />
           <br />
-          <form action="/user/reset-password" method="POST">
-            <input id="mail" name="mail" type="email" class="form-control txt-bx rounded-pill text-center"
-              placeholder="E-Mail ID" required />
-            <p>Password Reset Link will be sent to the Email</p>
+          <form action="/user/create" method="POST">
+            <input id="name" name="name" type="text" class="form-control txt-bx rounded-pill text-center"
+              placeholder="Username" required />
+            <br />
+            <input id="mail" name="mail" type="email" class="form-control rounded-pill txt-bx text-center"
+              placeholder="E-Mail" required />
+            <p>Verification Link will be sent to the Email</p>
             <br />
             <br />
-            <button type="submit" class="form-control submit-btn btn btn-outline-primary rounded-pill" value="submit">
-              Reset Password
+            <button type="submit" class="form-control submit-btn btn btn-outline-primary rounded-pill"
+              value="submit">
+              Sign Up
             </button>
           </form>
           <br />
