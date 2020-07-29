@@ -554,9 +554,9 @@ let controller = {
         } else {
           res.status(498).render("errors/expired", {
             type: "Link Expired",
-            status: "Register Link has been Expired. Try resetting again from the Link below",
+            status: "Reset Link has been Expired. Try resetting again from the Link below",
             link: "/user/reset_password",
-            label: "Create New Account"
+            label: "Reset Password"
           });
         }
       })
@@ -572,6 +572,7 @@ let controller = {
       });
   },
   forgot_pwd_change: (req, res) => {
+    console.log(req.body, "575")
     User.findAll({
       where: {
         EMAIL: req.body.email
@@ -579,26 +580,49 @@ let controller = {
       raw: true
     }).then((details) => {
       if (details.length != 0) {
-        controller.hash_password(req.body.password).then((password) => {
-          User.update({
-            PASSWORD: password,
-            ALLOWED: 1
-          }, {
-            where: {
-              EMAIL: req.body.email
-            }
-          });
-          pwd_reset.destroy({
-              where: {
-                EMAIL: req.body.email,
-              },
-            })
-            .then(() => {
-              res.json({
-                status: "Password Changed Successfully",
+        pwd_reset.findAll({
+          where: {
+            OTP: req.body.otp
+          }
+        }).then((details) => {
+          if (details.length != 0) {
+            console.log("587")
+            controller.hash_password(req.body.password).then((password) => {
+              User.update({
+                PASSWORD: password,
+                ALLOWED: 1
+              }, {
+                where: {
+                  EMAIL: req.body.email
+                }
               });
+              pwd_reset.destroy({
+                  where: {
+                    EMAIL: req.body.email,
+                  },
+                })
+                .then((details) => {
+                  res.status(200).render("messages/successful", {
+                    title: "Password Changed",
+                    type: "Password Changed Successfully",
+                    status: "Password Updated in your Profile. Please Login with new credentials.",
+                    link: "/user/login",
+                    label: "Go to Login Page"
+                  });
+                });
+            })
+          } else {
+            res.status(498).render("errors/expired", {
+              type: "Link Expired",
+              status: "Reset Link has been Expired. Try resetting again from the Link below",
+              link: "/user/reset-password",
+              label: "Reset Password"
             });
+          }
+        }).catch((err) => {
+          console.log(err)
         })
+
       } else {
         res.status(500).render("errors/unauthorised", {
           title: "Unauthorised Access",
