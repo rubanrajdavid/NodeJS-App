@@ -365,7 +365,7 @@ let controller = {
             title: "Unregistered",
             type: "User not registered",
             status: "User ID is not found. Check User ID or Create a New Account below.",
-            link: "/user/Create",
+            link: "/user/create",
             label: "Create New Account"
           });
         } else if (details[0].ALLOWED == 0) {

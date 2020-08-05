@@ -47,6 +47,17 @@ app.use(morgan("dev"));
 //Add Public as Static folder
 app.use(express.static("./src/views/public"));
 
+//Handle All 404 Error Requests
+app.use((req, res, next) => {
+  res.status(404).render('errors/unauthorised', {
+    title: "Page not Found",
+    type: "404 Page Not Found",
+    status: "Requested page does not exists. Please Check the URL entered",
+    link: "/user/login",
+    label: "Go to Login page"
+  });
+});
+
 //Start Express Server
 app.listen(3002, () => {
   console.log("server running in 3002 port");
