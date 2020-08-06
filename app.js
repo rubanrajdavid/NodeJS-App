@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const db = require("./src/configurations/sqlconnection");
 const hbs = require("express-handlebars");
 const path = require("path");
+require('dotenv').config()
+
 
 //Create an object in Express
 const app = express();
@@ -59,6 +61,6 @@ app.use((req, res, next) => {
 });
 
 //Start Express Server
-app.listen(3002, () => {
-  console.log("server running in 3002 port");
+app.listen(process.env.APP_PORT, () => {
+  console.log(`Server Started in Port ${process.env.APP_PORT}`);
 });
