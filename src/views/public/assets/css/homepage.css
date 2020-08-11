@@ -1,4 +1,5 @@
 body {
+  font-family: "Poppins";
   margin-top: 30px;
   background-color: rgb(190, 223, 243);
 }
@@ -6,7 +7,23 @@ body {
 .body-cont {
   background-color: lightskyblue;
 }
-h1 {
+h5 {
+  margin: 10px;
+  margin-top: 0px;
+}
+h2 {
   font-weight: 600;
-  font-family: "Nunito";
+  font-family: "Poppins";
+}
+.greet {
+  margin: 10px;
+  margin-top: 0px;
+  float: left;
+}
+.signout,
+.profile {
+  margin: 40px;
+  margin-top: 0px;
+  margin-left: 0px;
+  float: right;
 }

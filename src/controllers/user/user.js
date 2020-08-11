@@ -1,19 +1,13 @@
-require('dotenv').config()
+require("dotenv").config();
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
-const {
-  mail_settings,
-  mail_name
-} = require("../../configurations/mail_cred");
-const {
-  User,
-  new_user,
-  pwd_reset
-} = require("../../models/user/User");
-const {
-  raw
-} = require("body-parser");
+const localStrategy = require("passport-local").Strategy;
+const passport = require("passport");
+const session = require("express-session");
+const { mail_settings, mail_name } = require("../../configurations/mail_cred");
+const { User, new_user, pwd_reset } = require("../../models/user/User");
+const { raw } = require("body-parser");
 
 let controller = {
   listusers: (_req, res) => {
@@ -32,11 +26,11 @@ let controller = {
   },
   userdetails: (req, res) => {
     User.findAll({
-        where: {
-          EMAIL: req.params.mail,
-        },
-        raw: true,
-      })
+      where: {
+        EMAIL: req.params.mail,
+      },
+      raw: true,
+    })
       .then((details) => {
         console.log(details);
         if (details.length != 0) {
@@ -53,9 +47,10 @@ let controller = {
           res.status(404).render("errors/unauthorised", {
             title: "User not Found",
             type: "User does'nt Exist",
-            status: "Used ID Doesnt exist. Please check the Email ID entered Or Create a New Account from below",
+            status:
+              "Used ID Doesnt exist. Please check the Email ID entered Or Create a New Account from below",
             link: "/user/create",
-            label: "Create New Account"
+            label: "Create New Account",
           });
         }
       })
@@ -64,20 +59,21 @@ let controller = {
         res.status(500).render("errors/unauthorised", {
           title: "Sorry....",
           type: "Internal Server Error",
-          status: "An Error occured while trying to fetch your Account Details please try again later.",
+          status:
+            "An Error occured while trying to fetch your Account Details please try again later.",
           link: "/user/login",
-          label: "Go to Login page"
+          label: "Go to Login page",
         });
       });
   },
   check_if_user_exists: (email_id) => {
     return new Promise((resolve, reject) => {
       User.findAll({
-          where: {
-            EMAIL: email_id,
-          },
-          raw: true,
-        })
+        where: {
+          EMAIL: email_id,
+        },
+        raw: true,
+      })
         .then((details) => {
           if (details.length == 0) {
             resolve(false);
@@ -136,14 +132,17 @@ let controller = {
       });
   },
   update_unverified_new_user: (email_id, name, user_otp) => {
-    new_user.update({
-      name: name,
-      otp: user_otp,
-    }, {
-      where: {
-        mail: email_id,
+    new_user.update(
+      {
+        name: name,
+        otp: user_otp,
       },
-    }, );
+      {
+        where: {
+          mail: email_id,
+        },
+      },
+    );
     return user_otp;
   },
   send_verification_mail: async (email_id, name, user_otp, type) => {
@@ -189,9 +188,10 @@ let controller = {
         } else {
           res.status(498).render("errors/expired", {
             type: "Link Expired",
-            status: "Register Link has been Expired. Try registering again from the Link below",
+            status:
+              "Register Link has been Expired. Try registering again from the Link below",
             link: "/user/create",
-            label: "Create New Account"
+            label: "Create New Account",
           });
         }
       })
@@ -200,9 +200,10 @@ let controller = {
         res.status(500).render("errors/unauthorised", {
           title: "Sorry....",
           type: "Internal Server Error",
-          status: "An Error occured while trying to verify your account please try again later.",
+          status:
+            "An Error occured while trying to verify your account please try again later.",
           link: "/user/login",
-          label: "Go to Login page"
+          label: "Go to Login page",
         });
       });
   },
@@ -233,10 +234,11 @@ let controller = {
                   res.status(200).render("messages/mail_sent", {
                     title: "Verification Mail Sent",
                     type: "Sent Verification E-Mail",
-                    status: "Click the verification Link in your Mail to Register.",
+                    status:
+                      "Click the verification Link in your Mail to Register.",
                     link: "/user/login",
                     label: `or 
-                    Go to Login Page`
+                    Go to Login Page`,
                   });
                 })
                 .catch((err) => {
@@ -257,10 +259,11 @@ let controller = {
                   res.status(200).render("messages/mail_sent", {
                     title: "Verification Mail Resent",
                     type: "Resent Verification E-Mail",
-                    status: "Click the verification Link in your Mail to Register.",
+                    status:
+                      "Click the verification Link in your Mail to Register.",
                     link: "/user/login",
                     label: `or 
-                    Go to Login Page`
+                    Go to Login Page`,
                   });
                 })
                 .catch((err) => {
@@ -278,7 +281,7 @@ let controller = {
           type: "Existing User",
           status: "User ID you entered already Exists. Please Login.",
           link: "/user/login",
-          label: "Go to Login Page"
+          label: "Go to Login Page",
         });
       }
     });
@@ -301,7 +304,7 @@ let controller = {
               PASSWORD: password,
               EMAIL: req.body.email,
               CONTACT_NUMBER: req.body.contactNumber,
-              ALLOWED: 1
+              ALLOWED: 1,
             });
             new_user
               .destroy({
@@ -315,7 +318,7 @@ let controller = {
                   type: "Account Successfully Created",
                   status: "You can now Login with valid Credentials",
                   link: "/user/login",
-                  label: "Go to Login Page"
+                  label: "Go to Login Page",
                 });
               });
             console.log("main function", password);
@@ -323,8 +326,9 @@ let controller = {
         } else {
           res.status(500).render("errors/unauthorised", {
             type: "Unauthorised Access",
-            status: "You are Not Authorised to access the page Please Login/Sign Up",
-            link: "/user/login"
+            status:
+              "You are Not Authorised to access the page Please Login/Sign Up",
+            link: "/user/login",
           });
         }
       })
@@ -333,9 +337,10 @@ let controller = {
         res.status(500).render("errors/unauthorised", {
           title: "Sorry....",
           type: "Internal Server Error",
-          status: "An Error occured while trying to Create your account please try again later.",
+          status:
+            "An Error occured while trying to Create your account please try again later.",
           link: "/user/login",
-          label: "Go to Login page"
+          label: "Go to Login page",
         });
       });
     console.log(req.body, "#340");
@@ -353,74 +358,84 @@ let controller = {
       console.log("Hash Error", error);
     }
   },
-  login: (req, res) => {
-    User.findAll({
-        where: {
-          EMAIL: req.body.mail,
-        },
-        raw: true,
-      })
-      .then((details) => {
-        if (details.length == 0) {
-          res.status(400).render("errors/unauthorised", {
-            title: "Unregistered",
-            type: "User not registered",
-            status: "User ID is not found. Check User ID or Create a New Account below.",
-            link: "/user/create",
-            label: "Create New Account"
-          });
-        } else if (details[0].ALLOWED == 0) {
-          res.status(403).render("errors/unauthorised", {
-            title: "Password Reset Pending",
-            type: "Password Reset Pending",
-            status: "Password Reset Request has been Initiated and not completed. Please Complete the process and try again.",
-            link: "/user/reset-password",
-            label: "Go to Password Reset page"
-          });
-        } else {
-          console.log(details[0].PASSWORD)
-          bcrypt
-            .compare(req.body.password, details[0].PASSWORD)
-            .then((result) => {
-              console.log(result)
-              if (result) {
-                res.json({
-                  status: "Authentication Successful",
-                });
-              } else {
-                res.status(401).render("user/login", {
-                  retry: `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-                          Username / Password is Wrong
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>`
-                });
-              }
-            })
-            .catch((error) => {
-              console.log(error)
-              res.status(500).render("errors/unauthorised", {
-                title: "Sorry....",
-                type: "Internal Server Error",
-                status: "An Error occured while trying to Login your account please try again later.",
-                link: "/user/login",
-                label: "Go to Login page"
-              });
-            });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  login: (req, res, next) => {
+    passport.authenticate("local", {
+      successRedirect: "/user/homepage",
+      failureRedirect: "/user/login",
+      failureFlash: true,
+    })(req, res, next);
+
+    // User.findAll({
+    //   where: {
+    //     EMAIL: req.body.mail,
+    //   },
+    //   raw: true,
+    // })
+    //   .then((details) => {
+    //     if (details.length == 0) {
+    //       res.status(400).render("errors/unauthorised", {
+    //         title: "Unregistered",
+    //         type: "User not registered",
+    //         status:
+    //           "User ID is not found. Check User ID or Create a New Account below.",
+    //         link: "/user/create",
+    //         label: "Create New Account",
+    //       });
+    //     } else if (details[0].ALLOWED == 0) {
+    //       res.status(403).render("errors/unauthorised", {
+    //         title: "Password Reset Pending",
+    //         type: "Password Reset Pending",
+    //         status:
+    //           "Password Reset Request has been Initiated and not completed. Please Complete the process and try again.",
+    //         link: "/user/reset-password",
+    //         label: "Go to Password Reset page",
+    //       });
+    //     } else {
+    //       console.log(details[0].PASSWORD);
+    //       bcrypt
+    //         .compare(req.body.password, details[0].PASSWORD)
+    //         .then((result) => {
+    //           console.log(result);
+    //           if (result) {
+    //             const user = {
+    //               user: details[0].EMAIL,
+    //               name: details[0].FIRSTNAME,
+    //             };
+    //           } else {
+    //             res.status(401).render("user/login", {
+    //               retry: `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    //                       Username / Password is Wrong
+    //                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    //                           <span aria-hidden="true">&times;</span>
+    //                         </button>
+    //                       </div>`,
+    //             });
+    //           }
+    //         })
+    //         .catch((error) => {
+    //           console.log(error);
+    //           res.status(500).render("errors/unauthorised", {
+    //             title: "Sorry....",
+    //             type: "Internal Server Error",
+    //             status:
+    //               "An Error occured while trying to Login your account please try again later.",
+    //             link: "/user/login",
+    //             label: "Go to Login page",
+    //           });
+    //         });
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   },
   reset_password_email: (mail) => {
     User.findAll({
-        where: {
-          EMAIL: mail,
-        },
-        raw: true,
-      })
+      where: {
+        EMAIL: mail,
+      },
+      raw: true,
+    })
       .then((details) => {
         let user_otp = controller.generateOTP(15);
         console.log(details, 2);
@@ -460,57 +475,73 @@ let controller = {
             otp,
             1,
           );
-          User.update({
-            ALLOWED: 0
-          }, {
-            where: {
-              EMAIL: req.body.mail
-            }
-          });
-          pwd_reset.findAll({
-            where: {
-              EMAIL: req.body.mail
-            }
-          }).then((details) => {
-            if (details.length == 0) {
-              pwd_reset.create({
+          User.update(
+            {
+              ALLOWED: 0,
+            },
+            {
+              where: {
                 EMAIL: req.body.mail,
-                OTP: otp
-              }).then((details) => {
-                res.status(200).render("messages/mail_sent", {
-                  title: "Verification Mail Sent",
-                  type: "Verification E-Mail Sent",
-                  status: "Password Reset Verification Mail Sent Successfully. Check your E-Mail.",
-                  link: "/user/login",
-                  label: `or 
-                  Go to Login Page`
-                });
-                console.log("Password Reset OTP Generated Successfully")
-              }).catch((err) => {
-                console.log("Password Reset OTP error : ", err)
-              })
-            } else {
-              pwd_reset.update({
-                OTP: otp
-              }, {
-                where: {
-                  ID: details[0].ID
-                }
-              }).then((details) => {
-                res.status(200).render("messages/mail_sent", {
-                  title: "Verification Mail Resent",
-                  type: "Verification E-Mail Sent",
-                  status: "Password Reset Verification Mail Resent. Please check your E-Mail.",
-                  link: "/user/login",
-                  label: `or 
-                  Go to Login Page`
-                });
-                console.log("Update Password Reset OTP")
-              }).catch((err) => {
-                console.log("Error in Update Password reset OTP : ", err)
-              })
-            }
-          })
+              },
+            },
+          );
+          pwd_reset
+            .findAll({
+              where: {
+                EMAIL: req.body.mail,
+              },
+            })
+            .then((details) => {
+              if (details.length == 0) {
+                pwd_reset
+                  .create({
+                    EMAIL: req.body.mail,
+                    OTP: otp,
+                  })
+                  .then((details) => {
+                    res.status(200).render("messages/mail_sent", {
+                      title: "Verification Mail Sent",
+                      type: "Verification E-Mail Sent",
+                      status:
+                        "Password Reset Verification Mail Sent Successfully. Check your E-Mail.",
+                      link: "/user/login",
+                      label: `or 
+                  Go to Login Page`,
+                    });
+                    console.log("Password Reset OTP Generated Successfully");
+                  })
+                  .catch((err) => {
+                    console.log("Password Reset OTP error : ", err);
+                  });
+              } else {
+                pwd_reset
+                  .update(
+                    {
+                      OTP: otp,
+                    },
+                    {
+                      where: {
+                        ID: details[0].ID,
+                      },
+                    },
+                  )
+                  .then((details) => {
+                    res.status(200).render("messages/mail_sent", {
+                      title: "Verification Mail Resent",
+                      type: "Verification E-Mail Sent",
+                      status:
+                        "Password Reset Verification Mail Resent. Please check your E-Mail.",
+                      link: "/user/login",
+                      label: `or 
+                  Go to Login Page`,
+                    });
+                    console.log("Update Password Reset OTP");
+                  })
+                  .catch((err) => {
+                    console.log("Error in Update Password reset OTP : ", err);
+                  });
+              }
+            });
         });
       } else {
         controller.check_if_user_already_registered(req.body.mail).then((y) => {
@@ -518,17 +549,19 @@ let controller = {
             res.status(404).render("errors/unauthorised", {
               title: "User not Found",
               type: "User does'nt Exist",
-              status: "Used ID Doesnt exist. Please check the Email ID entered Or Create a New Account from below",
+              status:
+                "Used ID Doesnt exist. Please check the Email ID entered Or Create a New Account from below",
               link: "/user/create",
-              label: "Create New Account"
+              label: "Create New Account",
             });
           } else {
             res.status(403).render("errors/unauthorised", {
               title: "Account Verification Incomplete",
               type: "Account Verification Incomplete",
-              status: "Used ID is not verified. Please Verify Or Create a New Account from below",
+              status:
+                "Used ID is not verified. Please Verify Or Create a New Account from below",
               link: "/user/create",
-              label: "Create New Account"
+              label: "Create New Account",
             });
           }
         });
@@ -539,7 +572,8 @@ let controller = {
     res.render("user/forgot_password");
   },
   forgot_pwd_mail_verify: (req, res) => {
-    pwd_reset.findAll({
+    pwd_reset
+      .findAll({
         where: {
           OTP: req.params.otp,
         },
@@ -555,9 +589,10 @@ let controller = {
         } else {
           res.status(498).render("errors/expired", {
             type: "Link Expired",
-            status: "Reset Link has been Expired. Try resetting again from the Link below",
+            status:
+              "Reset Link has been Expired. Try resetting again from the Link below",
             link: "/user/reset_password",
-            label: "Reset Password"
+            label: "Reset Password",
           });
         }
       })
@@ -566,74 +601,106 @@ let controller = {
         res.status(500).render("errors/unauthorised", {
           title: "Sorry....",
           type: "Internal Server Error",
-          status: "An Error occured while trying to Verify your password Reset please try again later.",
+          status:
+            "An Error occured while trying to Verify your password Reset please try again later.",
           link: "/user/reset_password",
-          label: "Reset Password"
+          label: "Reset Password",
         });
       });
   },
   forgot_pwd_change: (req, res) => {
-    console.log(req.body, "575")
+    console.log(req.body, "575");
     User.findAll({
       where: {
-        EMAIL: req.body.email
+        EMAIL: req.body.email,
       },
-      raw: true
+      raw: true,
     }).then((details) => {
       if (details.length != 0) {
-        pwd_reset.findAll({
-          where: {
-            OTP: req.body.otp
-          }
-        }).then((details) => {
-          if (details.length != 0) {
-            console.log("587")
-            controller.hash_password(req.body.password).then((password) => {
-              User.update({
-                PASSWORD: password,
-                ALLOWED: 1
-              }, {
-                where: {
-                  EMAIL: req.body.email
-                }
-              });
-              pwd_reset.destroy({
-                  where: {
-                    EMAIL: req.body.email,
+        pwd_reset
+          .findAll({
+            where: {
+              OTP: req.body.otp,
+            },
+          })
+          .then((details) => {
+            if (details.length != 0) {
+              console.log("587");
+              controller.hash_password(req.body.password).then((password) => {
+                User.update(
+                  {
+                    PASSWORD: password,
+                    ALLOWED: 1,
                   },
-                })
-                .then((details) => {
-                  res.status(200).render("messages/successful", {
-                    title: "Password Changed",
-                    type: "Password Changed Successfully",
-                    status: "Password Updated in your Profile. Please Login with new credentials.",
-                    link: "/user/login",
-                    label: "Go to Login Page"
+                  {
+                    where: {
+                      EMAIL: req.body.email,
+                    },
+                  },
+                );
+                pwd_reset
+                  .destroy({
+                    where: {
+                      EMAIL: req.body.email,
+                    },
+                  })
+                  .then((details) => {
+                    res.status(200).render("messages/successful", {
+                      title: "Password Changed",
+                      type: "Password Changed Successfully",
+                      status:
+                        "Password Updated in your Profile. Please Login with new credentials.",
+                      link: "/user/login",
+                      label: "Go to Login Page",
+                    });
                   });
-                });
-            })
-          } else {
-            res.status(498).render("errors/expired", {
-              type: "Link Expired",
-              status: "Reset Link has been Expired. Try resetting again from the Link below",
-              link: "/user/reset-password",
-              label: "Reset Password"
-            });
-          }
-        }).catch((err) => {
-          console.log(err)
-        })
-
+              });
+            } else {
+              res.status(498).render("errors/expired", {
+                type: "Link Expired",
+                status:
+                  "Reset Link has been Expired. Try resetting again from the Link below",
+                link: "/user/reset-password",
+                label: "Reset Password",
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         res.status(500).render("errors/unauthorised", {
           title: "Unauthorised Access",
           type: "Unauthorised Access",
-          status: "You are Not Authorised to access the page Please Login/Sign Up",
+          status:
+            "You are Not Authorised to access the page Please Login/Sign Up",
           link: "/user/login",
-          label: "Go to Login Page"
+          label: "Go to Login Page",
         });
       }
-    })
+    });
+  },
+  checkAuthenticated: (req, res, next) => {
+    if (req.isAuthenticated()) {
+      return next();
+    } else {
+      res.redirect("/user/login");
+    }
+  },
+  checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+      return res.redirect("/user/homepage");
+    }
+    next();
+  },
+  logout: (req, res) => {
+    req.logOut();
+    res.redirect("/user/login");
+  },
+  homepage_html: (req, res) => {
+    res.render("home/homepage", {
+      name: req.user.FIRSTNAME + " " + req.user.LASTNAME,
+    });
   },
 };
 

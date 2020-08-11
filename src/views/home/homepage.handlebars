@@ -1,0 +1,43 @@
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <title>Home</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,400&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/assets/css/homepage.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+
+<body>
+  <div class="container text-center bg-white rounded shadow d-lg-flex justify-content-lg-center">
+    <h2>Home Page</h2>
+  </div>
+  <hr>
+  <div>
+    <span class="greet">
+      <h4>Welcome <b>{{name}}</b></h4>
+    </span>
+    <span class="signout">
+      <form action="/user/logout?_method=DELETE" method="post">
+        <button class="btn btn-danger" type="submit"><i class="fa fa-sign-out" aria-hidden="true"></i>
+          Sign Out</button>
+      </form>
+    </span>
+    <span class="profile">
+      <form action="/user/logout?_method=DELETE" method="post">
+        <button class="btn btn-primary" type="submit"><i class="fa fa-user" aria-hidden="true"></i>
+          Profile</button>
+      </form>
+    </span>
+  </div>
+
+  <script src="/assets/script/jquery.min.js"></script>
+  <script src="/assets/script/bootstrap.min.js"></script>
+</body>
+
+</html>
