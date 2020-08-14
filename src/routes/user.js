@@ -4,9 +4,6 @@ const router = express.Router();
 const passport = require("passport");
 router.use(passport.initialize());
 
-//Database error code reference URI --> https://mariadb.com/kb/en/mariadb-error-codes/
-//HTTP Status Code  Reference URI   --> https://www.exai.com/blog/http-status-codes-cheat-sheet
-
 //Get List of Users and handle errors
 router.get("/listusers", controller.listusers);
 
@@ -48,5 +45,8 @@ router.post("/verify-reset", controller.forgot_pwd_change);
 
 //Navigate to homepage
 router.get("/homepage", controller.checkAuthenticated, controller.homepage_html);
+
+//Navigate to Update Profile
+router.get("/profile",controller.updateProfile)
 
 module.exports = router;

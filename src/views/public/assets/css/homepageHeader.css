@@ -1,0 +1,7 @@
+form#logoutForm {
+  margin-bottom: 0px;
+}
+.fa-pencil-square-o,
+.fa-sign-out {
+  color: #0275d8;
+}

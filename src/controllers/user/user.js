@@ -364,70 +364,6 @@ let controller = {
       failureRedirect: "/user/login",
       failureFlash: true,
     })(req, res, next);
-
-    // User.findAll({
-    //   where: {
-    //     EMAIL: req.body.mail,
-    //   },
-    //   raw: true,
-    // })
-    //   .then((details) => {
-    //     if (details.length == 0) {
-    //       res.status(400).render("errors/unauthorised", {
-    //         title: "Unregistered",
-    //         type: "User not registered",
-    //         status:
-    //           "User ID is not found. Check User ID or Create a New Account below.",
-    //         link: "/user/create",
-    //         label: "Create New Account",
-    //       });
-    //     } else if (details[0].ALLOWED == 0) {
-    //       res.status(403).render("errors/unauthorised", {
-    //         title: "Password Reset Pending",
-    //         type: "Password Reset Pending",
-    //         status:
-    //           "Password Reset Request has been Initiated and not completed. Please Complete the process and try again.",
-    //         link: "/user/reset-password",
-    //         label: "Go to Password Reset page",
-    //       });
-    //     } else {
-    //       console.log(details[0].PASSWORD);
-    //       bcrypt
-    //         .compare(req.body.password, details[0].PASSWORD)
-    //         .then((result) => {
-    //           console.log(result);
-    //           if (result) {
-    //             const user = {
-    //               user: details[0].EMAIL,
-    //               name: details[0].FIRSTNAME,
-    //             };
-    //           } else {
-    //             res.status(401).render("user/login", {
-    //               retry: `<div class="alert alert-danger alert-dismissible fade show" role="alert">
-    //                       Username / Password is Wrong
-    //                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    //                           <span aria-hidden="true">&times;</span>
-    //                         </button>
-    //                       </div>`,
-    //             });
-    //           }
-    //         })
-    //         .catch((error) => {
-    //           console.log(error);
-    //           res.status(500).render("errors/unauthorised", {
-    //             title: "Sorry....",
-    //             type: "Internal Server Error",
-    //             status:
-    //               "An Error occured while trying to Login your account please try again later.",
-    //             link: "/user/login",
-    //             label: "Go to Login page",
-    //           });
-    //         });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   },
   reset_password_email: (mail) => {
     User.findAll({
@@ -699,9 +635,19 @@ let controller = {
   },
   homepage_html: (req, res) => {
     res.render("home/homepage", {
-      name: req.user.FIRSTNAME + " " + req.user.LASTNAME,
+      title: "Homepage",
+      userName: req.user.FIRSTNAME + " " + req.user.LASTNAME,
+      layout: 'homepageLayout'
     });
   },
+  updateProfile: (req, res) => {
+    res.render("user/profile", {
+      title: "Profile",
+      //userName: req.user.FIRSTNAME + " " + req.user.LASTNAME,
+      layout: "homepageLayout"
+    })
+  }
 };
+
 
 module.exports = controller;
