@@ -58,6 +58,7 @@ app.use(bodyParser.raw());
 //Routes
 app.use("/", require("./src/routes/general"));
 app.use("/user", require("./src/routes/user"));
+app.use("/vcapp", require("./src/routes/vcApp"));
 
 //Test DB Connection
 db.authenticate()
