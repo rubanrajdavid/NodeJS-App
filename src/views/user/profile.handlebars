@@ -1,43 +1,45 @@
 <br>
 <div class="container">
-    <h3><b>Profile</b> </h3>
+    <h3><b>Profile</b></h3>
     <hr>
-    <form action="user/updateProfile" method="post"></form>
-    <div class="form-row">
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input type="text" class="form-control" id="firstName" value="{{firstName}}">
+    <form action="profile" method="post">
+        <div class="form-row">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" class="form-control" id="firstName" value="{{firstName}}" name="firstName"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input readonly required type="email" class="form-control" id="email" value="{{email}}"
+                        name="emmail">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" class="form-control" id="newPassword" name="newPassword">
+                    <br>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input readonly type="email" class="form-control" id="email" value="{{email}}">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" value="{{lastName}}" name="lastName">
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" inputmode="tel" required class="form-control" id="phoneNumber" name="phoneNumber"
+                        value="{{phoneNumber}}">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+                    <br>
+                    <button type="submit" id="submitButton" class="btn btn-success">Update Profile</button>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="newPassword">New Password</label>
-                <input type="password" class="form-control" id="newPassword">
-                <br>
-            </div>
+            <div class="col-md-2"></div>
         </div>
-        <div class="col-md-5">
-            <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input type="text" class="form-control" id="lastName" value="{{lastName}}">
-            </div>
-            <div class="form-group">
-                <label for="phoneNumber">Phone Number</label>
-                <input type="tel" class="form-control" id="phoneNumber" value="{{phoneNumber}}">
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" class="form-control" id="confirmPassword">
-                <br>
-                <button type="submit" class="btn btn-success">Update Profile</button>
-            </div>
-        </div>
-        <div class="col-md-2"></div>
-    </div>
+        {{{message}}}
     </form>
-
-
 </div>

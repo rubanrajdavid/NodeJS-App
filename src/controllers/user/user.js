@@ -640,14 +640,114 @@ let controller = {
       layout: 'homepageLayout'
     });
   },
-  updateProfile: (req, res) => {
-    res.render("user/profile", {
-      title: "Profile",
-      //userName: req.user.FIRSTNAME + " " + req.user.LASTNAME,
-      layout: "homepageLayout"
+  updateProfileRender: (req, res) => {
+    if (typeof req.user === "undefined") {
+      res.redirect("/user/login");
+    }
+    User.findAll({
+      where: {
+        ID: req.user.ID
+      }
+    }).then(() => {
+      res.render("user/profile", {
+        title: "Profile",
+        userName: req.user.FIRSTNAME + " " + req.user.LASTNAME,
+        phoneNumber: req.user.CONTACT_NUMBER,
+        firstName: req.user.FIRSTNAME,
+        lastName: req.user.LASTNAME,
+        email: req.user.EMAIL,
+        layout: "homepageLayout"
+      })
+    }).catch(err => {
+      res.status(500).render("errors/unauthorised", {
+        title: "Sorry....",
+        type: "Internal Server Error",
+        status:
+          "An Error occured while trying to fetch your Account Details please try again later.",
+        link: "/user/login",
+        label: "Go to Login page",
+      });
     })
+    console.log(req.user.ID)
+  },
+  updateProfileDetails: (req, res) => {
+    console.log(req.body)
+    if (typeof req.user === "undefined") {
+      res.redirect("/user/login");
+    } else if (req.body.newPassword != '') {
+      console.log("PWD Change Active")
+      controller.hash_password(req.body.newPassword).then((password) => {
+        User.update({
+          FIRSTNAME: req.body.firstName,
+          LASTNAME: req.body.lastName,
+          PASSWORD: password,
+          CONTACT_NUMBER: req.body.phoneNumber,
+        }, { where: { ID: req.user.ID } }).then(() => {
+          User.findAll({
+            where: {
+              ID: req.user.ID
+            }
+          }).then((details) => {
+            res.render("user/profile", {
+              title: "Profile",
+              userName: details[0].FIRSTNAME + " " + details[0].LASTNAME,
+              phoneNumber: details[0].CONTACT_NUMBER,
+              firstName: details[0].FIRSTNAME,
+              lastName: details[0].LASTNAME,
+              email: details[0].EMAIL,
+              layout: "homepageLayout",
+              message: `<div class="row">
+              <div class="col-md-8"></div>
+              <div class="col-md-4">
+                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                      Profile Updated Successfully
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+              </div>
+          </div>`
+            })
+          })
+        })
+      })
+
+    }
+    else {
+      User.update({
+        FIRSTNAME: req.body.firstName,
+        LASTNAME: req.body.lastName,
+        CONTACT_NUMBER: req.body.phoneNumber,
+      }, { where: { ID: req.user.ID } }).then(() => {
+        User.findAll({
+          where: {
+            ID: req.user.ID
+          }
+        }).then((details) => {
+          res.render("user/profile", {
+            title: "Profile",
+            userName: details[0].FIRSTNAME + " " + details[0].LASTNAME,
+            phoneNumber: details[0].CONTACT_NUMBER,
+            firstName: details[0].FIRSTNAME,
+            lastName: details[0].LASTNAME,
+            email: details[0].EMAIL,
+            layout: "homepageLayout",
+            message: `<div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    Profile Updated Successfully
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>`
+          })
+        })
+      })
+    }
   }
 };
-
 
 module.exports = controller;

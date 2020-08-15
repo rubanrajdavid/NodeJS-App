@@ -4,7 +4,7 @@ var confirmPassword = document.getElementById("confirmPassword");
 
 function check_passwords(password, confirmPassword) {
     if (password == confirmPassword) {
-        //document.getElementById("submit_btn").disabled = false;
+        document.getElementById("submitButton").disabled = false;
         if (document.getElementById("confirmPassword").classList.contains("is-invalid")) {
             document.getElementById("confirmPassword").classList.remove("is-invalid")
         }
@@ -13,7 +13,7 @@ function check_passwords(password, confirmPassword) {
         }
 
     } else {
-        //document.getElementById("submit_btn").disabled = true;
+        document.getElementById("submitButton").disabled = true;
         if (document.getElementById("confirmPassword").classList.contains("is-valid")) {
             document.getElementById("confirmPassword").classList.remove("is-valid")
         }

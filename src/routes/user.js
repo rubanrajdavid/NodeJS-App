@@ -47,6 +47,9 @@ router.post("/verify-reset", controller.forgot_pwd_change);
 router.get("/homepage", controller.checkAuthenticated, controller.homepage_html);
 
 //Navigate to Update Profile
-router.get("/profile",controller.updateProfile)
+router.get("/profile", controller.updateProfileRender)
+
+//POST to Update Profile
+router.post("/profile", controller.updateProfileDetails)
 
 module.exports = router;
