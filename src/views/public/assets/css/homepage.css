@@ -1,0 +1,8 @@
+.row {
+  width: 100%;
+}
+.fa-video-camera,
+.fa-cog {
+  color: #009dff;
+  text-shadow: 2px 1px 4px rgba(0, 0, 0, 0.8);
+}
