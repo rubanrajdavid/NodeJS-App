@@ -736,7 +736,7 @@ let controller = {
             <div class="col-md-8"></div>
             <div class="col-md-4">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    Profile Updated Successfully
+                    Profile Updated Successfully..!
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
