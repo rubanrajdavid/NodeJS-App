@@ -70,7 +70,7 @@ db.authenticate()
   );
 
 //Log each request URI ,Status and its response time
-app.use(morgan("dev"));
+//app.use(morgan("dev"));
 
 //Add Public as Static folder
 app.use(express.static("./src/views/public"));
@@ -88,5 +88,5 @@ app.use((req, res, next) => {
 
 //Start Express Server
 app.listen(process.env.APP_PORT, () => {
-  console.log(`Server Started in Port ${process.env.APP_PORT}`);
+  console.log(`App Connected`);
 });

@@ -5,8 +5,10 @@ const router = express.Router();
 const passport = require("passport");
 router.use(passport.initialize());
 
-router.get("/", vcController.dashboardRender)
-router.get("/joinroom", vcController.joinRoomRender)
-router.get("/createroom", vcController.createRoomRender)
+router.get("/", userController.checkAuthenticated, vcController.dashboardRender)
+router.get("/joinroom", userController.checkAuthenticated, vcController.joinRoomRender)
+router.get("/createroom", userController.checkAuthenticated, vcController.createRoomRender)
+
+router.post("/createroom", userController.checkAuthenticated, vcController.createRoom)
 
 module.exports = router;
