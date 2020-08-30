@@ -1,7 +1,8 @@
 const Sequelize = require("sequelize");
+const { Op } = require("sequelize");
 const db = require("../../configurations/sqlconnection")
 
-const room_data = db.define('room_data', {
+const roomData = db.define('room_data', {
     ID: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -25,5 +26,5 @@ const room_data = db.define('room_data', {
 })
 
 module.exports = {
-    room_data: room_data
+    roomData: roomData
 }
