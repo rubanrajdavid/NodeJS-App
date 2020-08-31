@@ -11,21 +11,19 @@ const helperFunctions = {
         }
         return OTP;
     },
-    findParticipantsPreProcess: (detail) => {
-        if (detail.PARTICIPANTS) {
-            detail.PARTICIPANTS = detail.PARTICIPANTS.split(",")
-        }
-        return detail
-    },
     findParticipants: (details, email) => {
+        details = details.map((detail) => {
+            if (detail.PARTICIPANTS) {
+                detail.PARTICIPANTS = detail.PARTICIPANTS.split(",")
+            }
+            return detail
+        })
         var dashboardData = []
-        // console.log(details, email)
         for (i = 0; i < details.length; i++) {
             if (details[i].PARTICIPANTS.includes(email) || details[i].CREATED_BY == email) {
                 dashboardData.push(details[i])
             }
         }
-        console.log(dashboardData)
         return dashboardData
     }
 }
@@ -40,9 +38,7 @@ const controller = {
                 ]
             }, raw: true
         }).then((details) => {
-            details = details.map(helperFunctions.findParticipantsPreProcess)
             details = helperFunctions.findParticipants(details, req.user.EMAIL)
-
             console.log(details)
             res.render("vcApp/vcAppDashboard.handlebars", {
                 layout: "vcAppLayout",
