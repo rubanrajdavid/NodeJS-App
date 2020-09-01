@@ -1,10 +1,29 @@
-{{#each details}}
-<br>
-{{this.CREATED_BY}}
-<br>
-{{this.PARTICIPANTS}}
-<br>
-{{this.UID}}
-<br>
-<hr>
-{{/each}}
+<div class="container">
+    <br>
+    <ul class="list-group">
+        <li href="#" class="list-group-item title">
+            <h4><b>Available Rooms</b></h4>
+        </li>
+        {{#each details}}
+        <li href="#" class="list-group-item text-left">
+            <label class="name" style="margin-bottom: 0px !important">
+                <b>Room Name :</b> {{this.ROOM_NAME}} <br>
+                <b>Created by :</b> {{this.CREATED_BY}} <br>
+                <b>Room Participants :</b> {{this.PARTICIPANTS}} <br>
+                <b>Room UID :</b> {{this.UID}} <br>
+            </label>
+            <label class="pull-right " style="margin-bottom: 0px"> <a class=" btn btn-success"
+                    href="/vcapp/chatroom/{{this.UID}}">
+                    <i class="fa fa-bullseye fa-lg"></i>
+                </a>
+                <form action="/vcapp/deleteroom/{{this.UID}}?_method=DELETE" method="post" id="deleteRoom">
+                    <a class="btn btn-danger" id="deleteButton" href="#">
+                        <i class="fa fa-trash-o fa-lg"></i>
+                    </a>
+                </form>
+            </label>
+        </li>
+        {{/each}}
+    </ul>
+    {{{message}}}
+</div>

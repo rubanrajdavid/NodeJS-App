@@ -1,0 +1,7 @@
+.test {
+  display: flex;
+  align-items: center;
+}
+#deleteRoom {
+  margin-top: 10px;
+}
