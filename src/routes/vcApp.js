@@ -10,5 +10,7 @@ router.get("/joinroom", userController.checkAuthenticated, vcController.joinRoom
 router.get("/createroom", userController.checkAuthenticated, vcController.createRoomRender)
 
 router.post("/createroom", userController.checkAuthenticated, vcController.createRoom)
+router.get("/chatroom/:uid", userController.checkAuthenticated, vcController.chatRoomRender)
+router.delete("/deleteroom/:uid", userController.checkAuthenticated, vcController.deleteRoom)
 
 module.exports = router;
