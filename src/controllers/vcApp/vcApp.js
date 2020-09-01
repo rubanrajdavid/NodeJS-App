@@ -47,7 +47,8 @@ const controller = {
                 dashboard: " active",
                 joinRoom: "",
                 createRoom: "",
-                details
+                details,
+                message: req.flash('message')
             })
         })
     },
@@ -74,19 +75,14 @@ const controller = {
     createRoom: (req, res) => {
         console.log(req.body)
         roomData.create({
+            ROOM_NAME: req.body.roomName,
             CREATED_BY: req.user.EMAIL,
             PARTICIPANTS: req.body.participantEmail,
             ADMIN_ID: req.body.adminEmail,
             UID: helperFunctions.generateUID(20),
-        });
-        res.render("vcApp/vcAppCreateRoom.handlebars", {
-            layout: "vcAppLayout",
-            userName: req.user.FIRSTNAME + " " + req.user.LASTNAME,
-            title: "Create Room",
-            dashboard: "",
-            joinRoom: "",
-            createRoom: " active",
-            message: `<div class="row">
+        }).then((details) => {
+            console.log(details)
+            req.flash('message', `<br><div class="row">
             <div class="col-md-8"></div>
             <div class="col-md-4">
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -96,10 +92,54 @@ const controller = {
                     </button>
                 </div>
             </div>
-        </div>`
+        </div>`);
+            res.redirect('/vcapp/');
+        });
+
+    },
+    deleteRoom: (req, res) => {
+        roomData.destroy({
+            where: {
+                UID: req.params.uid,
+            },
+        }).then(() => {
+            res.redirect("/vcapp");
         })
     },
-    dashboard: (req, res) => {
+    chatRoomRender: (req, res) => {
+        roomData.findAll({
+            where: {
+                UID: req.params.uid
+            }, raw: true
+        }).then((details) => {
+            if (details.length != 0) {
+                res.render("vcApp/vcAppChatRoom.handlebars", {
+                    layout: "vcAppLayout",
+                    userName: req.user.FIRSTNAME + " " + req.user.LASTNAME,
+                    userID: req.user.EMAIL,
+                    roomID: req.params.uid,
+                    title: "Chat Room",
+                    dashboard: " active",
+                    joinRoom: "",
+                    createRoom: ""
+                })
+            }
+            else if (details.length == 0) {
+                req.flash('message', `<br><div class="row">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Room Dosen't Exist Please Verify the Room ID
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </br>`);
+                res.redirect('/vcapp/');
+            }
+
+        })
 
     }
 }
