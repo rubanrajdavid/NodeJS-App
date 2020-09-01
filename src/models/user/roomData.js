@@ -8,6 +8,9 @@ const roomData = db.define('room_data', {
         primaryKey: true,
         autoIncrement: true,
     },
+    ROOM_NAME: {
+        type: Sequelize.STRING
+    },
     CREATED_BY: {
         type: Sequelize.STRING
     },
