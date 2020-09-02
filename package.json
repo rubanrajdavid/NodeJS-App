@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "startServer": "node app.js",
+    "devServer": "nodemon app.js"
   },
   "author": "rubanrajdavid",
   "license": "ISC",
@@ -25,6 +25,7 @@
     "nodemailer": "^6.4.10",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "sequelize": "^6.3.3"
+    "sequelize": "^6.3.3",
+    "socket.io": "^2.3.0"
   }
 }

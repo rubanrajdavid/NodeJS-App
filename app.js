@@ -1,4 +1,5 @@
-const express = require("express");
+const app = require("express")();
+const express = require("express")
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const db = require("./src/configurations/sqlconnection");
@@ -13,8 +14,11 @@ require("dotenv").config();
 //Passport Config
 require("./src/controllers/user/passport")(passport);
 
-//Create an object in Express
-const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+//Passport Config
+// require("./src/controllers/vcApp/vcApp")(io);
 
 //Setup for Handlebars
 app.set("views", path.join(__dirname, "src/views"));
@@ -86,7 +90,9 @@ app.use((req, res, next) => {
   });
 });
 
+module.exports = io
+
 //Start Express Server
-app.listen(process.env.APP_PORT, () => {
+http.listen(process.env.APP_PORT, () => {
   console.log(`App Connected`);
 });
