@@ -17,6 +17,12 @@ require("./src/controllers/user/passport")(passport);
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+io.on('connection', socket => {
+  socket.on('join-room', (roomID, userID) => {
+    console.log(roomID, userID)
+  })
+})
+
 //Passport Config
 // require("./src/controllers/vcApp/vcApp")(io);
 

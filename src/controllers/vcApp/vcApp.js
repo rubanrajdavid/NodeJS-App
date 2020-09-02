@@ -1,7 +1,6 @@
 const { roomData } = require("../../models/user/roomData.js");
 const { Op } = require("sequelize");
 const io = require("../../../app");
-const { sockets } = require("../../../app");
 const helperFunctions = {
     generateUID: (size) => {
         var string =
@@ -144,12 +143,8 @@ const controller = {
         })
 
     },
-    chatRoom:(io)=>{
-        io.on('connection',socket=>{
-            socket.on('join-room',(roomID,userID)=>{
-                console.log(roomID,userID)
-            })
-        })
+    chatRoom: (io) => {
+
     }
 }
 
