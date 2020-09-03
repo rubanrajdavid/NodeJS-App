@@ -18,7 +18,12 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
 io.on('connection', socket => {
-  socket.on('join-room', (roomID, userID) => {
+  socket.on('joinRoom', (roomID, userID) => {
+    socket.join(roomID)
+    socket.to(roomID).broadcast.emit('userConnected', userID)
+    socket.on('disconnect',()=>{
+      socket.to(roomID).broadcast.emit('userDisconnected',userID)
+    })
     console.log(roomID, userID)
   })
 })
